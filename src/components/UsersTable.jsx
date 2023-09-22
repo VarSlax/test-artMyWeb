@@ -18,42 +18,45 @@ import {
 } from "@mui/material";
 
 const UsersTable = () => {
-  const [usersData, setUsersData] = useState([]);
+  const [usersData, setUsersData] = useState({});
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [gender, setGender] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const handleChangePage = (event, newPage) => {
     setCurrentPage(newPage + 1);
-    setPage(page + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1);
   };
 
   const handleChangeGender = (event) => {
     setGender(event.target.value);
   };
 
-  const filterUsersByGender = (initialUsersData) => {
+  const filterUsersByGender = () => {
+    if (!usersData[currentPage]) {
+      return [];
+    }
+
     if (gender === "female") {
-      return initialUsersData.filter((el) => el.gender === "female");
+      return usersData[currentPage].filter((el) => el.gender === "female");
     }
 
     if (gender === "male") {
-      return initialUsersData.filter((el) => el.gender === "male");
+      return usersData[currentPage].filter((el) => el.gender === "male");
     }
 
-    return initialUsersData;
+    return usersData[currentPage];
   };
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://gorest.co.in/public/v1/users?page=${page}`,
+        `https://gorest.co.in/public/v1/users?page=${currentPage}`,
         {
           headers: {
             Authorization:
@@ -65,7 +68,10 @@ const UsersTable = () => {
       const responseData = response?.data.data;
       const paginationData = response?.data.meta.pagination;
 
-      setUsersData(responseData);
+      setUsersData((prevData) => ({
+        ...prevData,
+        [currentPage]: responseData,
+      }));
       setTotalPages(paginationData.pages);
     } catch (error) {
       console.error("Ошибка при загрузке данных", error);
@@ -75,7 +81,7 @@ const UsersTable = () => {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [currentPage, gender]);
 
   return (
     <Box sx={{ m: 1 }}>
@@ -106,7 +112,7 @@ const UsersTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filterUsersByGender(usersData).map((user) => (
+              {filterUsersByGender().map((user) => (
                 <TableRow hover key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>
