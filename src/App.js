@@ -13,7 +13,7 @@ function App() {
         <Route path="/users" element={<UsersTable />} exact />
         <Route path="/user/:id" element={<UserProfile />} />
       </Routes>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </>
   );
 }

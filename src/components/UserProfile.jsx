@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import UserField from "./UserField";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -17,11 +17,20 @@ const UserProfile = () => {
 
   const [active, setActive] = useState(true);
   const [user, setUser] = useState({
+    id: "",
     name: "",
     email: "",
     gender: "",
     status: "",
   });
+
+  const userFields = [
+    { label: "User ID", name: "id", disabled: true },
+    { label: "Username", name: "name", disabled: active },
+    { label: "User Email", name: "email", disabled: active },
+    { label: "User Gender(male/female)", name: "gender", disabled: active },
+    { label: "User Status(active/inactive)", name: "status", disabled: active },
+  ];
 
   const fetchUser = async () => {
     try {
@@ -34,7 +43,13 @@ const UserProfile = () => {
           },
         }
       );
-      setUser(response?.data.data);
+      setUser({
+        id: response.data.data.id ?? "",
+        name: response.data.data.name ?? "",
+        email: response.data.data.email ?? "",
+        gender: response.data.data.gender ?? "",
+        status: response.data.data.status ?? "",
+      });
     } catch (e) {
       console.error("Ошибка при загрузке пользователя", e);
     }
@@ -63,93 +78,23 @@ const UserProfile = () => {
 
   useEffect(() => {
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
     <Box sx={{ mt: 1 }}>
       <Card sx={{ background: "lightblue", m: "auto", width: "40%" }}>
         <CardContent>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            User ID
-            <TextField
-              value={user.id}
-              onChange={handleInputChange}
-              disabled={active}
-              label={id}
-              defaultValue={id}
-            />
-          </Box>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            Username
-            <TextField
-              label="Имя"
-              name="name"
-              value={user.name}
+          {userFields.map((field) => (
+            <UserField
+              key={field.name}
+              label={field.label}
+              name={field.name}
+              value={user[field.name]}
+              disabled={field.disabled}
               onChange={handleInputChange}
             />
-          </Box>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            User Email
-            <TextField
-              label="Email"
-              name="email"
-              value={user.email}
-              onChange={handleInputChange}
-            />
-          </Box>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            User gender
-            <TextField
-              label="Гендер"
-              name="gender"
-              value={user.gender}
-              onChange={handleInputChange}
-            />
-          </Box>
-          <Box
-            sx={{
-              mb: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            User status
-            <TextField
-              label="Статус"
-              name="status"
-              value={user.status}
-              onChange={handleInputChange}
-            />
-          </Box>
+          ))}
         </CardContent>
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button

@@ -56,7 +56,7 @@ const UsersTable = () => {
             "Bearer 4507ec091617189feb007c42f949e980d400b1772751df25de40f18ef7c77e25",
         },
       });
-      setUsersData(response.data.data);
+      setUsersData(response?.data.data);
     } catch (error) {
       console.error("Ошибка при загрузке данных", error);
     }
@@ -69,7 +69,7 @@ const UsersTable = () => {
   return (
     <Box sx={{ m: 1 }}>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="select-gender">gender</InputLabel>
+        <InputLabel id="select-gender">Gender</InputLabel>
         <Select
           labelId="select-gender"
           id="select-gender"
@@ -87,22 +87,22 @@ const UsersTable = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Имя</TableCell>
+                <TableCell>Id</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
-                <TableCell>Гендер</TableCell>
-                <TableCell>Статус</TableCell>
+                <TableCell>Gender</TableCell>
+                <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filterUsersByGender(usersData)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((user) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={user.id}>
-                    <Link to={`/user/${user.id}`}>
-                      <TableCell>{user.id}</TableCell>
-                    </Link>
-
-                    <TableCell>{user.name}</TableCell>
+                  <TableRow hover key={user.id}>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>
+                      <Link to={`/user/${user.id}`}>{user.name}</Link>
+                    </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.gender}</TableCell>
                     <TableCell>{user.status}</TableCell>
