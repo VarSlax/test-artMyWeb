@@ -1,6 +1,5 @@
 import React from "react";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import { TextField, Box } from "@mui/material";
 
 const UserField = ({ label, name, value, disabled, onChange }) => {
   return (

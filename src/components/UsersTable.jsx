@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -74,7 +74,7 @@ const UsersTable = () => {
       }));
       setTotalPages(paginationData.pages);
     } catch (error) {
-      console.error("Ошибка при загрузке данных", error);
+      console.error("Data fetching error", error);
     }
   };
 

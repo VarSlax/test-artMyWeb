@@ -6,7 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 
-const HomePage = () => {
+const Home = () => {
   const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const handleRedirect = () => {
@@ -37,4 +37,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

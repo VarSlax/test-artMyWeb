@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 import UserField from "./UserField";
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
+import { Box, Card, CardActions, CardContent, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { toast } from "react-toastify";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -51,7 +47,7 @@ const UserProfile = () => {
         status: response.data.data.status ?? "",
       });
     } catch (e) {
-      console.error("Ошибка при загрузке пользователя", e);
+      console.error("Fetch user error", e);
     }
   };
 
@@ -68,11 +64,11 @@ const UserProfile = () => {
             "Bearer 4507ec091617189feb007c42f949e980d400b1772751df25de40f18ef7c77e25",
         },
       });
-      toast.success("Пользователь успешно обновлен");
+      toast.success("User updated successfully");
       navigate("/users");
     } catch (error) {
-      toast.error("Ошибка при обновлении пользователя");
-      console.error("Ошибка при обновлении пользователя", error);
+      toast.error("Updating user error");
+      console.error("Updating user error", error);
     }
   };
 
