@@ -19,17 +19,19 @@ import {
 
 const UsersTable = () => {
   const [usersData, setUsersData] = useState([]);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [gender, setGender] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setCurrentPage(newPage + 1);
+    setPage(page + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   const handleChangeGender = (event) => {
@@ -50,13 +52,21 @@ const UsersTable = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://gorest.co.in/public/v1/users", {
-        headers: {
-          Authorization:
-            "Bearer 4507ec091617189feb007c42f949e980d400b1772751df25de40f18ef7c77e25",
-        },
-      });
-      setUsersData(response?.data.data);
+      const response = await axios.get(
+        `https://gorest.co.in/public/v1/users?page=${page}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer 4507ec091617189feb007c42f949e980d400b1772751df25de40f18ef7c77e25",
+          },
+        }
+      );
+
+      const responseData = response?.data.data;
+      const paginationData = response?.data.meta.pagination;
+
+      setUsersData(responseData);
+      setTotalPages(paginationData.pages);
     } catch (error) {
       console.error("Ошибка при загрузке данных", error);
     }
@@ -64,7 +74,7 @@ const UsersTable = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   return (
     <Box sx={{ m: 1 }}>
@@ -95,28 +105,26 @@ const UsersTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filterUsersByGender(usersData)
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((user) => (
-                  <TableRow hover key={user.id}>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>
-                      <Link to={`/user/${user.id}`}>{user.name}</Link>
-                    </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.gender}</TableCell>
-                    <TableCell>{user.status}</TableCell>
-                  </TableRow>
-                ))}
+              {filterUsersByGender(usersData).map((user) => (
+                <TableRow hover key={user.id}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>
+                    <Link to={`/user/${user.id}`}>{user.name}</Link>
+                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.gender}</TableCell>
+                  <TableCell>{user.status}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10]}
           component="div"
-          count={filterUsersByGender(usersData).length}
+          count={totalPages}
           rowsPerPage={rowsPerPage}
-          page={page}
+          page={currentPage - 1}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
