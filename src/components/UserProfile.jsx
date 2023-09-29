@@ -4,7 +4,7 @@ import { Box, Card, CardActions, CardContent, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
-import { useData } from "../utils/DataContext";
+import { useData } from "./DataContext";
 import UserField from "./UserField";
 
 const UserProfile = () => {
