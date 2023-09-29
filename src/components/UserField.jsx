@@ -14,10 +14,10 @@ const UserField = ({ label, name, value, disabled, onChange }) => {
       {label}
       <TextField
         name={name}
-        label={label}
-        value={value}
+        value={value || ""}
         disabled={disabled}
         onChange={onChange}
+        variant="outlined"
       />
     </Box>
   );
