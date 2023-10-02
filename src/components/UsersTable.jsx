@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -15,11 +15,13 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+
 import { useData } from "./DataContext.jsx";
-import { useEffect } from "react";
+import Loading from "./Loading.jsx";
 
 const UsersTable = () => {
-  const { fetchUsersDataByPage, tableDataForSinglePage, pagination } = useData();
+  const { fetchUsersDataByPage, tableDataForSinglePage, pagination, loading } =
+    useData();
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [gender, setGender] = useState("");
@@ -39,9 +41,13 @@ const UsersTable = () => {
   };
 
   useEffect(() => {
-    fetchUsersDataByPage(currentPage, gender)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, gender]) 
+    fetchUsersDataByPage(currentPage, gender);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, gender]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Box sx={{ m: 1 }}>
@@ -72,18 +78,17 @@ const UsersTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {tableDataForSinglePage
-                .map((user) => (
-                  <TableRow hover key={user.id}>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>
-                      <Link to={`/user/${user.id}`}>{user.name}</Link>
-                    </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.gender}</TableCell>
-                    <TableCell>{user.status}</TableCell>
-                  </TableRow>
-                ))}
+              {tableDataForSinglePage.map((user) => (
+                <TableRow hover key={user.id}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>
+                    <Link to={`/user/${user.id}`}>{user.name}</Link>
+                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.gender}</TableCell>
+                  <TableCell>{user.status}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

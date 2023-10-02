@@ -6,11 +6,12 @@ import SaveIcon from "@mui/icons-material/Save";
 
 import { useData } from "./DataContext";
 import UserField from "./UserField";
+import Loading from "./Loading";
 
 const UserProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { userCardData, setUserCardData, fetchUserById, updateUser } =
+  const { userCardData, setUserCardData, fetchUserById, updateUser, loading } =
     useData();
 
   const [active, setActive] = useState(true);
@@ -40,6 +41,10 @@ const UserProfile = () => {
     fetchUserById(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Box sx={{ mt: 1 }}>

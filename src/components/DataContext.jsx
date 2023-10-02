@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useContext, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const DataContext = createContext();
 
@@ -14,6 +14,7 @@ export const DataProvider = ({ children }) => {
   const [tableDataForSinglePage, setTableDataForSinglePage] = useState([]);
   const [userCardData, setUserCardData] = useState({});
   const [pagination, setPagination] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const fetchUsersDataByPage = async (pageNumber, gender) => {
     try {
@@ -28,8 +29,10 @@ export const DataProvider = ({ children }) => {
       const responseData = response.data;
       setTableDataForSinglePage(responseData?.data);
       setPagination(responseData?.meta.pagination);
+      setLoading(false);
     } catch (error) {
-      console.error('Data fetching error', error);
+      console.error("Data fetching error", error);
+      setLoading(false);
     }
   };
 
@@ -41,14 +44,17 @@ export const DataProvider = ({ children }) => {
         },
       });
       setUserCardData({
-        id: response.data.data.id ?? '',
-        name: response.data.data.name ?? '',
-        email: response.data.data.email ?? '',
-        gender: response.data.data.gender ?? '',
-        status: response.data.data.status ?? '',
+        id: response.data.data.id ?? "",
+        name: response.data.data.name ?? "",
+        email: response.data.data.email ?? "",
+        gender: response.data.data.gender ?? "",
+        status: response.data.data.status ?? "",
       });
+      setLoading(false);
     } catch (error) {
-      console.error('Fetch user by ID error', error);
+      setLoading(true);
+      console.error("Fetch user by ID error", error);
+      setLoading(false);
       return null;
     }
   };
@@ -61,17 +67,19 @@ export const DataProvider = ({ children }) => {
         },
       });
       setUserCardData({
-        id: response.data.data.id ?? '',
-        name: response.data.data.name ?? '',
-        email: response.data.data.email ?? '',
-        gender: response.data.data.gender ?? '',
-        status: response.data.data.status ?? '',
+        id: response.data.data.id ?? "",
+        name: response.data.data.name ?? "",
+        email: response.data.data.email ?? "",
+        gender: response.data.data.gender ?? "",
+        status: response.data.data.status ?? "",
       });
-      toast.success('User updated successfully');
-      navigate('/users');
+      setLoading(false);
+      toast.success("User updated successfully");
+      navigate("/users");
     } catch (error) {
-      toast.error('Updating user error');
-      console.error('Updating user error', error);
+      toast.error("Updating user error");
+      console.error("Updating user error", error);
+      setLoading(false);
     }
   };
 
@@ -85,6 +93,7 @@ export const DataProvider = ({ children }) => {
         tableDataForSinglePage,
         fetchUsersDataByPage,
         updateUser,
+        loading,
       }}
     >
       {children}
